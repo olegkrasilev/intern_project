@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "packageManager": "npm@10.9.2",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint"
   },
   "repository": {
     "type": "git",
@@ -18,7 +21,10 @@
   },
   "homepage": "https://github.com/olegkrasilev/intern_project#readme",
   "workspaces": [
-      "apps/*",
-      "libs/*"
-  ]
+    "apps/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "turbo": "^2.5.0"
+  }
 }
