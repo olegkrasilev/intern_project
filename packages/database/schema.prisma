@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"
@@ -12,4 +6,169 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+
+
+model User {
+  id           String   @id @default(uuid())
+  name         String   @unique
+  email        String   @unique
+  nickname     String   @unique
+  phone        String   @unique
+  passwordHash String
+  bio          String?
+  isDisabled   Boolean  @default(false)
+  isActive     Boolean  @default(true)
+  role         String     // restrict tables
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime? @updatedAt
+  deletedAt    DateTime?
+
+  posts        Post[] @relation("UserPosts")
+  comments     Comment[] @relation("UserComments")
+  likes         Like[] @relation("UserLikes")
+  followers    Follow[] @relation("UserFollowers")
+  notification Notification[] @relation("UserNotification")
+  chats         Chat[] @relation("UserChats")
+  followed     Follow[] @relation("UserFollowed")
+  messages      Message[] @relation("UserMessages")
+  chatParticipants ChatParticipant[] @relation("UserChatParticipants")
+  assets Asset[] @relation("UserAssets")
+  @@index([role,isActive,isDisabled])
+  @@map("users")
+}
+
+
+model Post {
+  id        String   @id @default(uuid())
+  userId    String
+  caption   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime? @updatedAt
+  deletedAt DateTime?
+
+  user      User     @relation("UserPosts",fields: [userId], references: [id])
+  comments Comment[] @relation("PostComments")
+  likes Like[]       @relation("PostLikes")
+  assets Asset[]     @relation("PostAssets")
+  @@index([id])
+  @@map("posts")
+}
+
+model Comment {
+  id          String   @id @default(uuid())
+  postId      String
+  userId      String
+  commentText String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+
+  post        Post     @relation("PostComments",fields: [postId], references: [id])
+  user        User     @relation("UserComments",fields: [userId], references: [id])
+  @@index([id,postId])
+  @@map("comments")
+}
+
+model Like {
+  id        String   @id @default(uuid())
+  postId    String
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  post      Post     @relation("PostLikes",fields: [postId], references: [id])
+  user      User     @relation("UserLikes",fields: [userId], references: [id])
+  @@index([id,postId])
+  @@map("likes")
+}
+
+model Follow {
+  id          String   @id @default(uuid())
+  followerId  String
+  followedId  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+
+  follower    User     @relation("UserFollowers", fields: [followerId], references: [id])
+  followed    User     @relation("UserFollowed", fields: [followedId], references: [id])
+  @@index([id,followerId,followedId])
+  @@map("followers")
+}
+
+model Chat {
+  id        String   @id @default(uuid())
+  creatorId String
+  chatName  String
+  chatType  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  creator   User     @relation("UserChats",fields: [creatorId], references: [id])
+  messages Message[] @relation("MessageChats")
+  chatParticipants ChatParticipant[] @relation("ChatParticipants")
+  @@index([id,creatorId])
+  @@map("chats")
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  chatId    String
+  senderId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+
+  sender    User     @relation("UserMessages",fields: [senderId], references: [id])
+  chats Chat[] @relation("MessageChats")
+  @@index([id,chatId])
+  @@map("messages")
+}
+
+model ChatParticipant {
+  chatId   String
+  userId   String
+  role     String
+
+  chat     Chat     @relation("ChatParticipants", fields: [chatId], references: [id])
+  user     User     @relation("UserChatParticipants", fields: [userId], references: [id])
+  @@id([chatId, userId])
+  @@map("chat_participants")
+}
+
+model Notification {
+  id              String   @id @default(uuid())
+  userId          String
+  notificationType String
+  referenceId     String?
+  referenceTable  String
+  message         String?
+  read            Boolean  @default(false)
+  createdAt       DateTime @default(now())
+
+  user            User     @relation("UserNotification",fields: [userId], references: [id])
+  @@index([id,userId])
+  @@map("notifications")
+}
+
+model Asset {
+  id          String   @id @default(uuid())
+  postId      String?  @db.Uuid
+  userId      String   @db.Uuid
+  mimeType    String
+  fileSize    Int
+  resolution  String?
+  url         String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+
+  post        Post?    @relation("PostAssets",fields: [postId], references: [id])
+  user        User     @relation("UserAssets",fields: [userId], references: [id])
+  @@index([id,userId])
+  @@map("assets")
 }
