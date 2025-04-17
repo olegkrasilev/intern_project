@@ -15,9 +15,16 @@ export default defineConfig([
   },
   {
     files: ["**/*.{js,mjs,cjs,ts}"],
-    languageOptions: { globals: globals.browser },
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
   },
-  tseslint.configs.recommended,
+
+  tseslint.configs.recommendedTypeChecked,
+  tseslint.configs.stylisticTypeChecked,
   sonarjs.configs.recommended,
   eslintPluginUnicorn.configs.recommended,
   pluginPromise.configs["flat/recommended"],
