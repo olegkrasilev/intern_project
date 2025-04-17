@@ -1,20 +1,23 @@
-# Включаем подробный вывод команд для отладки
+#!/bin/bash
+
+# Enable detailed command output for debugging
 set -x
 
-# Логирование начала процесса
-echo "Running pre-commit hook..."
+# Log the start of the process
+echo -e "\033[32mRunning pre-commit hook...\033[0m"  # Green
 
-# Переходим в директорию проекта и запускаем команду lint
-echo "Running Eslint..."
+# Navigate to the project directory and run the lint command
+echo -e "\033[34mRunning Eslint...\033[0m"  # Blue
 cd apps/core-server-app && npm run lint
+cd apps/auth-service && npm run lint
 
-# Переходим в директорию проекта и запускаем команду format
-echo "Running Prettier..."
+# Navigate to the project directory and run the format command
+echo -e "\033[33mRunning Prettier...\033[0m"  # Yellow
 cd apps/core-server-app && npm run format
 
-# Переходим в директорию проекта и запускаем команду test
-echo "Running tests..."
+# Navigate to the project directory and run the test command
+echo -e "\033[35mRunning tests...\033[0m"  # Magenta
 cd apps/core-server-app && npm run test
 
-# Логирование завершения процесса
-echo "Pre-commit hook completed."
+# Log the end of the process
+echo -e "\033[32mPre-commit hook completed.\033[0m"  # Green
