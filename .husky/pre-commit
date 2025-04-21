@@ -1,20 +1,18 @@
-# Включаем подробный вывод команд для отладки
+# Debug + fail fast
 set -x
 
-# Логирование начала процесса
-echo "Running pre-commit hook..."
+echo -e "\033[32mRunning pre-commit hook...\033[0m"
 
-# Переходим в директорию проекта и запускаем команду lint
-echo "Running Eslint..."
-cd apps/core-server-app && npm run lint
+echo -e "\033[34m↳ Lint core-server-app...\033[0m"
+npm --prefix apps/core-server-app run lint
 
-# Переходим в директорию проекта и запускаем команду format
-echo "Running Prettier..."
-cd apps/core-server-app && npm run format
+echo -e "\033[34m↳ Lint auth-service...\033[0m"
+npm --prefix apps/auth-service      run lint
 
-# Переходим в директорию проекта и запускаем команду test
-echo "Running tests..."
-cd apps/core-server-app && npm run test
+echo -e "\033[33m↳ Prettier format (core-server-app)...\033[0m"
+npm --prefix apps/core-server-app run format
 
-# Логирование завершения процесса
-echo "Pre-commit hook completed."
+echo -e "\033[35m↳ Run tests (core-server-app)...\033[0m"
+npm --prefix apps/core-server-app run test
+
+echo -e "\033[32mPre-commit hook completed.\033[0m"
