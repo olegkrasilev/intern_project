@@ -1,23 +1,18 @@
-#!/bin/bash
-
-# Enable detailed command output for debugging
+# Debug + fail fast
 set -x
 
-# Log the start of the process
-echo -e "\033[32mRunning pre-commit hook...\033[0m"  # Green
+echo -e "\033[32mRunning pre-commit hook...\033[0m"
 
-# Navigate to the project directory and run the lint command
-echo -e "\033[34mRunning Eslint...\033[0m"  # Blue
-cd apps/core-server-app && npm run lint
-cd apps/auth-service && npm run lint
+echo -e "\033[34m↳ Lint core-server-app...\033[0m"
+npm --prefix apps/core-server-app run lint
 
-# Navigate to the project directory and run the format command
-echo -e "\033[33mRunning Prettier...\033[0m"  # Yellow
-cd apps/core-server-app && npm run format
+echo -e "\033[34m↳ Lint auth-service...\033[0m"
+npm --prefix apps/auth-service      run lint
 
-# Navigate to the project directory and run the test command
-echo -e "\033[35mRunning tests...\033[0m"  # Magenta
-cd apps/core-server-app && npm run test
+echo -e "\033[33m↳ Prettier format (core-server-app)...\033[0m"
+npm --prefix apps/core-server-app run format
 
-# Log the end of the process
-echo -e "\033[32mPre-commit hook completed.\033[0m"  # Green
+echo -e "\033[35m↳ Run tests (core-server-app)...\033[0m"
+npm --prefix apps/core-server-app run test
+
+echo -e "\033[32mPre-commit hook completed.\033[0m"
