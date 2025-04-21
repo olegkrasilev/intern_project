@@ -6,6 +6,7 @@ import sonarjs from "eslint-plugin-sonarjs";
 import eslintPluginUnicorn from "eslint-plugin-unicorn";
 import pluginPromise from "eslint-plugin-promise";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
+import nodePlugin from "eslint-plugin-n";
 
 export default defineConfig([
   {
@@ -33,4 +34,5 @@ export default defineConfig([
   eslintPluginUnicorn.configs.recommended,
   pluginPromise.configs["flat/recommended"],
   eslintPluginPrettierRecommended,
+  nodePlugin.configs["flat/recommended-script"],
 ]);
