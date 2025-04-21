@@ -14,11 +14,15 @@ export default defineConfig([
     extends: ["js/recommended"],
   },
   {
-    files: ["**/*.{js,mjs,cjs,ts}"],
+    files: ["**/*.{js,cjs,ts}"],
     languageOptions: {
       parserOptions: {
         projectService: true,
         tsconfigRootDir: import.meta.dirname,
+        globals: {
+          ...globals.node,
+          ...globals.jest,
+        },
       },
     },
   },
