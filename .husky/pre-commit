@@ -1,0 +1,18 @@
+# Debug + fail fast
+set -x
+
+echo -e "\033[32mRunning pre-commit hook...\033[0m"
+
+echo -e "\033[34m↳ Lint core-server-app...\033[0m"
+npm --prefix apps/core-server-app run lint
+
+echo -e "\033[34m↳ Lint auth-service...\033[0m"
+npm --prefix apps/auth-service      run lint
+
+echo -e "\033[33m↳ Prettier format (core-server-app)...\033[0m"
+npm --prefix apps/core-server-app run format
+
+echo -e "\033[35m↳ Run tests (core-server-app)...\033[0m"
+npm --prefix apps/core-server-app run test
+
+echo -e "\033[32mPre-commit hook completed.\033[0m"
