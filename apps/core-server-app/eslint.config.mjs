@@ -34,8 +34,10 @@ export default tseslint.config(
   {
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-floating-promises': 'warn',
+      '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/no-unsafe-argument': 'warn',
+      'unicorn/prefer-top-level-await': 'off',
+      'unicorn/prevent-abbreviations': 'off',
     },
   },
 );
