@@ -1,0 +1,181 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(uuid()) @db.Uuid
+  name         String    @unique
+  email        String    @unique
+  nickname     String    @unique
+  phone        String    @unique
+  passwordHash String
+  bio          String?
+  isDisabled   Boolean   @default(false)
+  role         String // restrict tables
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime? @updatedAt
+  deletedAt    DateTime?
+
+  posts            Post[]            @relation("UserPosts")
+  comments         Comment[]         @relation("UserComments")
+  likes            Like[]            @relation("UserLikes")
+  followers        Subscriptions[]   @relation("UserFollowers")
+  notifications    Notification[]    @relation("UserNotification")
+  chats            Chat[]            @relation("UserChats")
+  subscriptions    Subscriptions[]   @relation("UserSubscriptions")
+  messages         Message[]         @relation("UserMessages")
+  chatParticipants ChatParticipant[] @relation("UserChatParticipants")
+  assets           Asset[]           @relation("UserAssets")
+
+  @@index([role, isDisabled])
+  @@map("users")
+}
+
+model Post {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @db.Uuid
+  caption   String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  deletedAt DateTime?
+
+  user     User      @relation("UserPosts", fields: [userId], references: [id])
+  comments Comment[] @relation("PostComments")
+  likes    Like[]    @relation("PostLikes")
+  assets   Asset[]   @relation("PostAssets")
+
+  @@index([userId])
+  @@map("posts")
+}
+
+model Comment {
+  id          String    @id @default(uuid()) @db.Uuid
+  postId      String    @db.Uuid
+  userId      String    @db.Uuid
+  commentText String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  post Post @relation("PostComments", fields: [postId], references: [id])
+  user User @relation("UserComments", fields: [userId], references: [id])
+
+  @@index([postId, userId])
+  @@map("comments")
+}
+
+model Like {
+  id        String    @id @default(uuid()) @db.Uuid
+  postId    String    @db.Uuid
+  userId    String    @db.Uuid
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  post Post @relation("PostLikes", fields: [postId], references: [id])
+  user User @relation("UserLikes", fields: [userId], references: [id])
+
+  @@index([postId, userId])
+  @@map("likes")
+}
+
+model Subscriptions {
+  id             String    @id @default(uuid()) @db.Uuid
+  subscriptionId String    @map("followerId") @db.Uuid
+  followedId     String    @db.Uuid
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  follower User @relation("UserFollowers", fields: [subscriptionId], references: [id])
+  followed User @relation("UserSubscriptions", fields: [followedId], references: [id])
+
+  @@index([subscriptionId, followedId])
+  @@map("followers")
+}
+
+model Chat {
+  id        String    @id @default(uuid()) @db.Uuid
+  creatorId String    @db.Uuid
+  chatName  String
+  chatType  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  creator          User              @relation("UserChats", fields: [creatorId], references: [id])
+  messages         Message[]         @relation("MessageChats")
+  chatParticipants ChatParticipant[] @relation("ChatParticipants")
+
+  @@index([creatorId])
+  @@map("chats")
+}
+
+model Message {
+  id        String    @id @default(uuid()) @db.Uuid
+  chatId    String
+  senderId  String    @db.Uuid
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  sender User   @relation("UserMessages", fields: [senderId], references: [id])
+  chats  Chat[] @relation("MessageChats")
+
+  @@index([senderId])
+  @@map("messages")
+}
+
+model ChatParticipant {
+  chatId String @db.Uuid
+  userId String @db.Uuid
+  role   String
+
+  chat Chat @relation("ChatParticipants", fields: [chatId], references: [id])
+  user User @relation("UserChatParticipants", fields: [userId], references: [id])
+
+  @@id([chatId, userId])
+  @@map("chat_participants")
+}
+
+model Notification {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @db.Uuid
+  notificationType String
+  referenceId      String?
+  referenceTable   String
+  message          String?
+  read             Boolean  @default(false)
+  createdAt        DateTime @default(now())
+
+  user User @relation("UserNotification", fields: [userId], references: [id])
+
+  @@index([userId])
+  @@map("notifications")
+}
+
+model Asset {
+  id         String    @id @default(uuid()) @db.Uuid
+  postId     String?   @db.Uuid
+  userId     String    @db.Uuid
+  mimeType   String
+  fileSize   Int
+  fileName   String
+  resolution String?
+  url        String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
+
+  post Post? @relation("PostAssets", fields: [postId], references: [id])
+  user User  @relation("UserAssets", fields: [userId], references: [id])
+
+  @@index([postId, userId])
+  @@map("assets")
+}
