@@ -9,29 +9,28 @@ datasource db {
 }
 
 model User {
-  id           String    @id @default(uuid()) @db.Uuid
-  name         String    @unique
-  email        String    @unique
-  nickname     String    @unique
-  phone        String    @unique
-  passwordHash String
-  bio          String?
-  isDisabled   Boolean   @default(false)
-  role         String // restrict tables
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime? @updatedAt
-  deletedAt    DateTime?
-
-  posts            Post[]            @relation("UserPosts")
-  comments         Comment[]         @relation("UserComments")
-  likes            Like[]            @relation("UserLikes")
-  followers        Subscriptions[]   @relation("UserFollowers")
-  notifications    Notification[]    @relation("UserNotification")
-  chats            Chat[]            @relation("UserChats")
-  subscriptions    Subscriptions[]   @relation("UserSubscriptions")
-  messages         Message[]         @relation("UserMessages")
-  chatParticipants ChatParticipant[] @relation("UserChatParticipants")
+  id               String            @id @default(uuid()) @db.Uuid
+  name             String            @unique
+  email            String            @unique
+  nickname         String            @unique
+  phone            String            @unique
+  passwordHash     String
+  bio              String?
+  isDisabled       Boolean           @default(false)
+  role             String
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime?         @updatedAt
+  deletedAt        DateTime?
   assets           Asset[]           @relation("UserAssets")
+  chatParticipants ChatParticipant[] @relation("UserChatParticipants")
+  chats            Chat[]            @relation("UserChats")
+  comments         Comment[]         @relation("UserComments")
+  subscriptions    Subscriptions[]   @relation("UserSubscriptions")
+  followers        Subscriptions[]   @relation("UserFollowers")
+  likes            Like[]            @relation("UserLikes")
+  messages         Message[]         @relation("UserMessages")
+  notifications    Notification[]    @relation("UserNotification")
+  posts            Post[]            @relation("UserPosts")
 
   @@index([role, isDisabled])
   @@map("users")
@@ -44,11 +43,10 @@ model Post {
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
   deletedAt DateTime?
-
-  user     User      @relation("UserPosts", fields: [userId], references: [id])
-  comments Comment[] @relation("PostComments")
-  likes    Like[]    @relation("PostLikes")
-  assets   Asset[]   @relation("PostAssets")
+  assets    Asset[]   @relation("PostAssets")
+  comments  Comment[] @relation("PostComments")
+  likes     Like[]    @relation("PostLikes")
+  user      User      @relation("UserPosts", fields: [userId], references: [id])
 
   @@index([userId])
   @@map("posts")
@@ -62,9 +60,8 @@ model Comment {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
-
-  post Post @relation("PostComments", fields: [postId], references: [id])
-  user User @relation("UserComments", fields: [userId], references: [id])
+  post        Post      @relation("PostComments", fields: [postId], references: [id])
+  user        User      @relation("UserComments", fields: [userId], references: [id])
 
   @@index([postId, userId])
   @@map("comments")
@@ -77,9 +74,8 @@ model Like {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
-
-  post Post @relation("PostLikes", fields: [postId], references: [id])
-  user User @relation("UserLikes", fields: [userId], references: [id])
+  post      Post      @relation("PostLikes", fields: [postId], references: [id])
+  user      User      @relation("UserLikes", fields: [userId], references: [id])
 
   @@index([postId, userId])
   @@map("likes")
@@ -92,26 +88,24 @@ model Subscriptions {
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
   deletedAt      DateTime?
-
-  follower User @relation("UserFollowers", fields: [subscriptionId], references: [id])
-  followed User @relation("UserSubscriptions", fields: [followedId], references: [id])
+  followed       User      @relation("UserSubscriptions", fields: [followedId], references: [id])
+  follower       User      @relation("UserFollowers", fields: [subscriptionId], references: [id])
 
   @@index([subscriptionId, followedId])
   @@map("followers")
 }
 
 model Chat {
-  id        String    @id @default(uuid()) @db.Uuid
-  creatorId String    @db.Uuid
-  chatName  String
-  chatType  String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
-
+  id               String            @id @default(uuid()) @db.Uuid
+  creatorId        String            @db.Uuid
+  chatName         String
+  chatType         String
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  deletedAt        DateTime?
+  chatParticipants ChatParticipant[] @relation("ChatParticipants")
   creator          User              @relation("UserChats", fields: [creatorId], references: [id])
   messages         Message[]         @relation("MessageChats")
-  chatParticipants ChatParticipant[] @relation("ChatParticipants")
 
   @@index([creatorId])
   @@map("chats")
@@ -124,9 +118,8 @@ model Message {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
-
-  sender User   @relation("UserMessages", fields: [senderId], references: [id])
-  chats  Chat[] @relation("MessageChats")
+  sender    User      @relation("UserMessages", fields: [senderId], references: [id])
+  chats     Chat[]    @relation("MessageChats")
 
   @@index([senderId])
   @@map("messages")
@@ -136,9 +129,8 @@ model ChatParticipant {
   chatId String @db.Uuid
   userId String @db.Uuid
   role   String
-
-  chat Chat @relation("ChatParticipants", fields: [chatId], references: [id])
-  user User @relation("UserChatParticipants", fields: [userId], references: [id])
+  chat   Chat   @relation("ChatParticipants", fields: [chatId], references: [id])
+  user   User   @relation("UserChatParticipants", fields: [userId], references: [id])
 
   @@id([chatId, userId])
   @@map("chat_participants")
@@ -153,8 +145,7 @@ model Notification {
   message          String?
   read             Boolean  @default(false)
   createdAt        DateTime @default(now())
-
-  user User @relation("UserNotification", fields: [userId], references: [id])
+  user             User     @relation("UserNotification", fields: [userId], references: [id])
 
   @@index([userId])
   @@map("notifications")
@@ -172,9 +163,8 @@ model Asset {
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   deletedAt  DateTime?
-
-  post Post? @relation("PostAssets", fields: [postId], references: [id])
-  user User  @relation("UserAssets", fields: [userId], references: [id])
+  post       Post?     @relation("PostAssets", fields: [postId], references: [id])
+  user       User      @relation("UserAssets", fields: [userId], references: [id])
 
   @@index([postId, userId])
   @@map("assets")

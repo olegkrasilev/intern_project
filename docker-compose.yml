@@ -11,12 +11,12 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./postgresql:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
     networks:
       - postgres-network
 
 volumes:
-  postgres-data:
+  postgres-data: 
 
 networks:
   postgres-network:
