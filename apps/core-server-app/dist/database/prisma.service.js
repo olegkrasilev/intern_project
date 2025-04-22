@@ -9,8 +9,8 @@ var PrismaService_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PrismaService = void 0;
 const common_1 = require("@nestjs/common");
-const database_1 = require("@packages/database");
-let PrismaService = PrismaService_1 = class PrismaService extends database_1.PrismaClient {
+const prisma_1 = require("../../../../packages/generated/prisma");
+let PrismaService = PrismaService_1 = class PrismaService extends prisma_1.PrismaClient {
     logger = new common_1.Logger(PrismaService_1.name);
     async onModuleInit() {
         try {

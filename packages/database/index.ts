@@ -1,3 +1,1 @@
-import { PrismaClient } from '../generated/prisma/client';
-
-export { PrismaClient };
+export * from '../generated/prisma/client';
