@@ -1,9 +1,11 @@
 import { UserRepository } from './repository/user.repository';
-import { CreateUserDTO } from './dto/user.dto';
-export declare class UsersService {
+import { UserDTO } from './dto/user.dto';
+import { CreateNewUserStrategy } from './strategy/user.strategy';
+export declare class UserService {
     private readonly userRepository;
-    constructor(userRepository: UserRepository);
-    create(createUserDto: CreateUserDTO): Promise<{
+    private readonly createNewUserStrategy;
+    constructor(userRepository: UserRepository, createNewUserStrategy: CreateNewUserStrategy);
+    create(userDto: UserDTO): Promise<{
         name: string;
         id: string;
         email: string;

@@ -1,7 +1,7 @@
 import { User } from '@packages/database';
-export declare class CreateUserDTO implements User {
-    name: string;
+export declare class UserDTO implements User {
     id: string;
+    name: string;
     nickname: string;
     phone: string;
     passwordHash: string;

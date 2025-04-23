@@ -1,12 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from './repository/user.repository';
-import { CreateUserDTO } from './dto/user.dto';
+import { UserDTO } from './dto/user.dto';
+import { CreateNewUserStrategy } from './strategy/user.strategy';
 
 @Injectable()
-export class UsersService {
-  constructor(private readonly userRepository: UserRepository) {}
+export class UserService {
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly createNewUserStrategy: CreateNewUserStrategy,
+  ) {}
 
-  create(createUserDto: CreateUserDTO) {
-    return this.userRepository.createUser(createUserDto);
+  async create(userDto: UserDTO) {
+    const existingUser = await this.userRepository.findUserByEmail(userDto);
+
+    if (!existingUser) {
+      return this.createNewUserStrategy.createUser(userDto);
+    }
+
+    return this.userRepository.createUser(userDto);
   }
 }

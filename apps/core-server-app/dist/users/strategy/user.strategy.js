@@ -9,29 +9,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserService = void 0;
+exports.CreateNewUserStrategy = void 0;
 const common_1 = require("@nestjs/common");
-const user_repository_1 = require("./repository/user.repository");
-const user_strategy_1 = require("./strategy/user.strategy");
-let UserService = class UserService {
+const user_repository_1 = require("../repository/user.repository");
+let CreateNewUserStrategy = class CreateNewUserStrategy {
     userRepository;
-    createNewUserStrategy;
-    constructor(userRepository, createNewUserStrategy) {
+    constructor(userRepository) {
         this.userRepository = userRepository;
-        this.createNewUserStrategy = createNewUserStrategy;
     }
-    async create(userDto) {
-        const existingUser = await this.userRepository.findUserByEmail(userDto);
-        if (!existingUser) {
-            return this.createNewUserStrategy.createUser(userDto);
-        }
+    async createUser(userDto) {
         return this.userRepository.createUser(userDto);
     }
 };
-exports.UserService = UserService;
-exports.UserService = UserService = __decorate([
+exports.CreateNewUserStrategy = CreateNewUserStrategy;
+exports.CreateNewUserStrategy = CreateNewUserStrategy = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [user_repository_1.UserRepository,
-        user_strategy_1.CreateNewUserStrategy])
-], UserService);
-//# sourceMappingURL=users.service.js.map
+    __metadata("design:paramtypes", [user_repository_1.UserRepository])
+], CreateNewUserStrategy);
+//# sourceMappingURL=user.strategy.js.map
