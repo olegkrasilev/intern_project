@@ -1,7 +1,7 @@
 import { User } from '@packages/database';
-export declare class UserDTO implements User {
-    id: string;
+export declare class UserDTO implements Omit<User, 'id'> {
     name: string;
+    email: string;
     nickname: string;
     phone: string;
     passwordHash: string;
@@ -11,6 +11,4 @@ export declare class UserDTO implements User {
     createdAt: Date;
     updatedAt: Date | null;
     deletedAt: Date | null;
-    username: string;
-    email: string;
 }

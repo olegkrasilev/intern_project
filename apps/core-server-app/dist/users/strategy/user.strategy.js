@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateNewUserStrategy = void 0;
+exports.ExistingUserStrategy = exports.CreateNewUserStrategy = void 0;
 const common_1 = require("@nestjs/common");
 const user_repository_1 = require("../repository/user.repository");
 let CreateNewUserStrategy = class CreateNewUserStrategy {
@@ -26,4 +26,13 @@ exports.CreateNewUserStrategy = CreateNewUserStrategy = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [user_repository_1.UserRepository])
 ], CreateNewUserStrategy);
+let ExistingUserStrategy = class ExistingUserStrategy {
+    handleExistingUser() {
+        throw new common_1.ConflictException('User already exist');
+    }
+};
+exports.ExistingUserStrategy = ExistingUserStrategy;
+exports.ExistingUserStrategy = ExistingUserStrategy = __decorate([
+    (0, common_1.Injectable)()
+], ExistingUserStrategy);
 //# sourceMappingURL=user.strategy.js.map

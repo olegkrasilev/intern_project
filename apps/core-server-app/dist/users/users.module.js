@@ -24,6 +24,7 @@ exports.UserModule = UserModule = __decorate([
             users_service_1.UserService,
             user_repository_1.UserRepository,
             user_strategy_1.CreateNewUserStrategy,
+            user_strategy_1.ExistingUserStrategy,
             prisma_service_1.PrismaService,
         ],
     })

@@ -1,4 +1,4 @@
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaService } from '../../database/prisma.service';
 import { User } from '@packages/database';
 import { UserDTO } from '../dto/user.dto';
 export declare class UserRepository {

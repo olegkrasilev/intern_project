@@ -10,6 +10,7 @@ async function bootstrap() {
         defaultVersion: '1',
         prefix: 'api/v',
     });
+    app.useGlobalPipes(new common_1.ValidationPipe());
     await app.listen(process.env.PORT ?? 3000);
 }
 void bootstrap();

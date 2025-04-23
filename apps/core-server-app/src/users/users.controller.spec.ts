@@ -3,7 +3,10 @@ import { UsersController } from './users.controller';
 import { UserService } from './users.service';
 import { UserRepository } from './repository/user.repository';
 import { PrismaService } from 'src/database/prisma.service';
-import { CreateNewUserStrategy } from './strategy/user.strategy';
+import {
+  CreateNewUserStrategy,
+  ExistingUserStrategy,
+} from './strategy/user.strategy';
 
 describe('UsersController', () => {
   let controller: UsersController;
@@ -15,6 +18,7 @@ describe('UsersController', () => {
         UserService,
         UserRepository,
         CreateNewUserStrategy,
+        ExistingUserStrategy,
         PrismaService,
       ],
     }).compile();

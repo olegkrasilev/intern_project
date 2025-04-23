@@ -6,3 +6,6 @@ export declare class CreateNewUserStrategy {
     constructor(userRepository: UserRepository);
     createUser(userDto: UserDTO): Promise<User>;
 }
+export declare class ExistingUserStrategy {
+    handleExistingUser(): void;
+}

@@ -2,7 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './users.service';
 import { UserRepository } from './repository/user.repository';
 import { PrismaService } from 'src/database/prisma.service';
-import { CreateNewUserStrategy } from './strategy/user.strategy';
+import {
+  CreateNewUserStrategy,
+  ExistingUserStrategy,
+} from './strategy/user.strategy';
 
 describe('UsersService', () => {
   let service: UserService;
@@ -13,6 +16,7 @@ describe('UsersService', () => {
         UserService,
         UserRepository,
         CreateNewUserStrategy,
+        ExistingUserStrategy,
         PrismaService,
       ],
     }).compile();

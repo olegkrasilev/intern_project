@@ -16,22 +16,25 @@ const user_strategy_1 = require("./strategy/user.strategy");
 let UserService = class UserService {
     userRepository;
     createNewUserStrategy;
-    constructor(userRepository, createNewUserStrategy) {
+    existingUserStrategy;
+    constructor(userRepository, createNewUserStrategy, existingUserStrategy) {
         this.userRepository = userRepository;
         this.createNewUserStrategy = createNewUserStrategy;
+        this.existingUserStrategy = existingUserStrategy;
     }
     async create(userDto) {
         const existingUser = await this.userRepository.findUserByEmail(userDto);
-        if (!existingUser) {
-            return this.createNewUserStrategy.createUser(userDto);
+        if (existingUser) {
+            return this.existingUserStrategy.handleExistingUser();
         }
-        return this.userRepository.createUser(userDto);
+        return this.createNewUserStrategy.createUser(userDto);
     }
 };
 exports.UserService = UserService;
 exports.UserService = UserService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [user_repository_1.UserRepository,
-        user_strategy_1.CreateNewUserStrategy])
+        user_strategy_1.CreateNewUserStrategy,
+        user_strategy_1.ExistingUserStrategy])
 ], UserService);
 //# sourceMappingURL=users.service.js.map
