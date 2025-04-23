@@ -14,7 +14,7 @@ npm --prefix apps/core-server-app run format
 
 echo -e "\033[35m↳ Run tests (core-server-app)...\033[0m"
 npm --prefix apps/core-server-app run test
-npm --prefix apps/core-server-app npm run test:e2e
+npm --prefix apps/core-server-app run test:e2e
 
 
 echo -e "\033[32mPre-commit hook completed.\033[0m"
