@@ -15,7 +15,6 @@ class UserDTO {
     deletedAt;
     username;
     email;
-    password;
 }
 exports.UserDTO = UserDTO;
 //# sourceMappingURL=user.dto.js.map

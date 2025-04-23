@@ -14,5 +14,4 @@ export class UserDTO implements User {
   deletedAt: Date | null;
   username: string;
   email: string;
-  password: string;
 }

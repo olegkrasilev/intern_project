@@ -5,8 +5,8 @@ export declare class UserRepository {
     private readonly prisma;
     constructor(prisma: PrismaService);
     findUserByEmail({ email }: Pick<UserDTO, 'email'>): Promise<{
-        id: string;
         name: string;
+        id: string;
         email: string;
         nickname: string;
         phone: string;

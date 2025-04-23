@@ -11,3 +11,12 @@ export class CreateNewUserStrategy {
     return this.userRepository.createUser(userDto);
   }
 }
+// @Injectable()
+// export class ExistingUserStrategy {
+//   constructor(private readonly userRepository: UserRepository) {}
+
+//   async create(userDto: UserDTO) {
+//     // Логика для обработки случая, когда пользователь уже существует
+//     throw new Error('User already exists');
+//   }
+// }
