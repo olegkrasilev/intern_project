@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserDTO = void 0;
 const class_validator_1 = require("class-validator");
 const roles_1 = require("../../shared/constants/roles");
+const class_transformer_1 = require("../../shared/utils/class-transformer");
 class UserDTO {
     name;
     email;
@@ -29,16 +30,19 @@ exports.UserDTO = UserDTO;
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
+    (0, class_transformer_1.Sanitize)(),
     __metadata("design:type", String)
 ], UserDTO.prototype, "name", void 0);
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsEmail)(),
+    (0, class_transformer_1.Sanitize)(),
     __metadata("design:type", String)
 ], UserDTO.prototype, "email", void 0);
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
+    (0, class_transformer_1.Sanitize)(),
     __metadata("design:type", String)
 ], UserDTO.prototype, "nickname", void 0);
 __decorate([
@@ -46,16 +50,19 @@ __decorate([
     (0, class_validator_1.Matches)(/^\+?[1-9]\d{1,14}$/, {
         message: 'Phone number must be a valid E.164 format',
     }),
+    (0, class_transformer_1.Sanitize)(),
     __metadata("design:type", String)
 ], UserDTO.prototype, "phone", void 0);
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
+    (0, class_transformer_1.Sanitize)(),
     __metadata("design:type", String)
 ], UserDTO.prototype, "passwordHash", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
+    (0, class_transformer_1.Sanitize)(),
     __metadata("design:type", Object)
 ], UserDTO.prototype, "bio", void 0);
 __decorate([
@@ -66,6 +73,7 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsEnum)(roles_1.UserRole),
+    (0, class_transformer_1.Sanitize)(),
     __metadata("design:type", String)
 ], UserDTO.prototype, "role", void 0);
 __decorate([

@@ -20,7 +20,11 @@ describe('AppController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    app.useGlobalPipes(new ValidationPipe());
+    app.useGlobalPipes(
+      new ValidationPipe({
+        transform: true,
+      }),
+    );
     prisma = moduleFixture.get<PrismaService>(PrismaService);
     await app.init();
   });
@@ -105,7 +109,7 @@ describe('AppController (e2e)', () => {
     return response;
   });
 
-  it('should return 500 on database error', async () => {
+  it('should return 500 on database error and throw an error', async () => {
     jest
       .spyOn(prisma.user, 'create')
       .mockRejectedValueOnce(new Error('Database error'));
@@ -116,6 +120,35 @@ describe('AppController (e2e)', () => {
       .expect(500);
 
     expect(response.body.message).toBe('Internal server error');
+  });
+
+  it('should not create a user with SQL injection in email or password', async () => {
+    const maliciousData = {
+      email: 'john.doe@example.com',
+      name: "<script>alert('xss');</script><b>John Doe</b> <i>This is a test</i> <img src='x' onerror='alert(\"Hacked!\")'>",
+      passwordHash: "'; DROP TABLE users; --",
+      nickname: 'Malicious',
+      phone: '+33333333333',
+      bio: null,
+      isDisabled: false,
+      role: 'user',
+      createdAt: new Date(),
+      updatedAt: null,
+      deletedAt: null,
+    };
+
+    const response = await request(app.getHttpServer())
+      .post('/users')
+      .send(maliciousData)
+      .expect(201);
+
+    expect(response.body.name).toBe('John Doe This is a test');
+  });
+
+  it('should not create the user twice with the same email', async () => {
+    await request(app.getHttpServer()).post('/users').send(user).expect(201);
+
+    await request(app.getHttpServer()).post('/users').send(user).expect(409);
   });
 
   beforeEach(async () => {
