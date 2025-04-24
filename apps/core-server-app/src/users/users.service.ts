@@ -15,7 +15,7 @@ export class UserService {
     private readonly existingUserStrategy: ExistingUserStrategy,
   ) {}
 
-  async create(userDTO: UserDTO): Promise<User | void> {
+  async createUser(userDTO: UserDTO): Promise<User | void> {
     const existingUser = await this.userRepository.findUserByEmail(userDTO);
 
     if (existingUser) {
@@ -23,5 +23,9 @@ export class UserService {
     }
 
     return this.createNewUserStrategy.createUser(userDTO);
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    return this.userRepository.getAllUsers();
   }
 }

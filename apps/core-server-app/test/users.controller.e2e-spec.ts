@@ -167,6 +167,30 @@ describe('AppController (e2e)', () => {
     expect(isMatch).toBe(true);
   });
 
+  it('should return all users', async () => {
+    const anotherUser = {
+      email: 'john1.doe@example.com',
+      name: 'john1',
+      passwordHash: '12345',
+      nickname: 'johnny',
+      phone: '+2222222222',
+      bio: null,
+      isDisabled: false,
+      role: 'user',
+      createdAt: new Date(),
+      updatedAt: null,
+      deletedAt: null,
+    };
+    await request(app.getHttpServer()).post('/users').send(user).expect(201);
+    await request(app.getHttpServer())
+      .post('/users')
+      .send(anotherUser)
+      .expect(201);
+
+    const users = await prisma.user.findMany();
+    expect(users.length).toBe(2);
+  });
+
   beforeEach(async () => {
     await prisma.user.deleteMany();
   });
