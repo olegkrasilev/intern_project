@@ -21,3 +21,22 @@ export class ExistingUserStrategy {
     throw new ConflictException('User already exist');
   }
 }
+
+@Injectable()
+export class UpdateUserStrategy {
+  constructor(private readonly userRepository: UserRepository) {}
+
+  async handleUpdateUser(
+    { id }: Pick<User, 'id'>,
+    userDTO: UserDTO,
+  ): Promise<User | void> {
+    const email = userDTO.email;
+    const existingUser = await this.userRepository.findUserByEmail({ email });
+
+    if (existingUser && existingUser.id !== id) {
+      throw new ConflictException('Email is already in use');
+    }
+
+    return this.userRepository.updateUserById({ id }, userDTO);
+  }
+}

@@ -31,4 +31,15 @@ export class UserRepository {
       throw new NotFoundException(`User with id ${id} not found`);
     }
   }
+
+  async updateUserById({ id }: Pick<User, 'id'>, data: UserDTO): Promise<User> {
+    try {
+      return await this.prisma.user.update({
+        where: { id },
+        data,
+      });
+    } catch {
+      throw new NotFoundException(`User with id ${id} not found`);
+    }
+  }
 }

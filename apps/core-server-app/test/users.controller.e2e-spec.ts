@@ -224,6 +224,81 @@ describe('AppController (e2e)', () => {
     expect(users.length).toBe(1);
   });
 
+  it('should correctly update the user', async () => {
+    const clonedUser = structuredClone(user);
+    const response = (await request(app.getHttpServer())
+      .post('/users')
+      .send(clonedUser)
+      .expect(201)) as { body: UserDTO & { id: string } };
+
+    const userId = response.body.id;
+
+    clonedUser.name = 'newName';
+    clonedUser.nickname = 'newNickname';
+    await request(app.getHttpServer())
+      .patch(`/users/${userId}`)
+      .send(clonedUser)
+      .expect(200);
+
+    const updatedUser = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    expect(updatedUser?.name).toBe(clonedUser.name);
+    expect(updatedUser?.nickname).toBe(clonedUser.nickname);
+  });
+
+  it('should not update the user with invalid id', async () => {
+    const clonedUser = structuredClone(user);
+
+    (await request(app.getHttpServer())
+      .post('/users')
+      .send(clonedUser)
+      .expect(201)) as { body: UserDTO & { id: string } };
+
+    const userId = '12345';
+
+    await request(app.getHttpServer())
+      .patch(`/users/${userId}`)
+      .send(clonedUser)
+      .expect(409);
+  });
+
+  it('should not update the user with existing email', async () => {
+    const anotherUser = {
+      email: 'john1.doe@example.com',
+      name: 'john1',
+      passwordHash: '12345',
+      nickname: 'johnny',
+      phone: '+2222222222',
+      bio: null,
+      isDisabled: false,
+      role: 'user',
+      createdAt: new Date(),
+      updatedAt: null,
+      deletedAt: null,
+    };
+
+    const response = (await request(app.getHttpServer())
+      .post('/users')
+      .send(user)
+      .expect(201)) as { body: UserDTO & { id: string } };
+
+    (await request(app.getHttpServer())
+      .post('/users')
+      .send(anotherUser)
+      .expect(201)) as { body: UserDTO & { id: string } };
+
+    const userId = response.body.id;
+
+    await request(app.getHttpServer())
+      .patch(`/users/${userId}`)
+      .send(anotherUser)
+      .expect(409);
+  });
+
   beforeEach(async () => {
     await prisma.user.deleteMany();
   });

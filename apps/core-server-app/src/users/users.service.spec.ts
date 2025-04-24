@@ -5,6 +5,7 @@ import { PrismaService } from 'src/database/prisma.service';
 import {
   CreateNewUserStrategy,
   ExistingUserStrategy,
+  UpdateUserStrategy,
 } from './strategy/user.strategy';
 
 describe('UsersService', () => {
@@ -17,6 +18,7 @@ describe('UsersService', () => {
         UserRepository,
         CreateNewUserStrategy,
         ExistingUserStrategy,
+        UpdateUserStrategy,
         PrismaService,
       ],
     }).compile();

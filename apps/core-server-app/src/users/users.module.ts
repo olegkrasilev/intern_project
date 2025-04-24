@@ -6,6 +6,7 @@ import { PrismaService } from '../database/prisma.service';
 import {
   CreateNewUserStrategy,
   ExistingUserStrategy,
+  UpdateUserStrategy,
 } from './strategy/user.strategy';
 
 @Module({
@@ -16,6 +17,7 @@ import {
     UserRepository,
     CreateNewUserStrategy,
     ExistingUserStrategy,
+    UpdateUserStrategy,
     PrismaService,
   ],
 })

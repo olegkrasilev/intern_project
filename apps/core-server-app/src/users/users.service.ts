@@ -4,6 +4,7 @@ import { UserDTO } from './dto/user.dto';
 import {
   CreateNewUserStrategy,
   ExistingUserStrategy,
+  UpdateUserStrategy,
 } from './strategy/user.strategy';
 import { User } from '@packages/database';
 
@@ -13,6 +14,7 @@ export class UserService {
     private readonly userRepository: UserRepository,
     private readonly createNewUserStrategy: CreateNewUserStrategy,
     private readonly existingUserStrategy: ExistingUserStrategy,
+    private readonly updateUserStrategy: UpdateUserStrategy,
   ) {}
 
   async createUser(userDTO: UserDTO): Promise<User | void> {
@@ -31,5 +33,9 @@ export class UserService {
 
   async deleteUserById({ id }: Pick<User, 'id'>): Promise<User> {
     return this.userRepository.deleteUserById({ id });
+  }
+
+  async updateUserById({ id }: Pick<User, 'id'>, userDTO: UserDTO) {
+    return this.updateUserStrategy.handleUpdateUser({ id }, userDTO);
   }
 }
