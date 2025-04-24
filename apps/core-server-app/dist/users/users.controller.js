@@ -21,8 +21,14 @@ let UsersController = class UsersController {
     constructor(userService) {
         this.userService = userService;
     }
-    createUser(createUserDto) {
-        return this.userService.create(createUserDto);
+    createUser(createUserDTO) {
+        return this.userService.createUser(createUserDTO);
+    }
+    getAllUsers() {
+        return this.userService.getAllUsers();
+    }
+    deleteUser(id) {
+        return this.userService.deleteUserById(id);
     }
 };
 exports.UsersController = UsersController;
@@ -33,6 +39,19 @@ __decorate([
     __metadata("design:paramtypes", [user_dto_1.UserDTO]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "createUser", null);
+__decorate([
+    (0, common_1.Get)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "getAllUsers", null);
+__decorate([
+    (0, common_1.Delete)(),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "deleteUser", null);
 exports.UsersController = UsersController = __decorate([
     (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [users_service_1.UserService])

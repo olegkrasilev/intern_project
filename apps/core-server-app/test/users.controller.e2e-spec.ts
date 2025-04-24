@@ -1,5 +1,4 @@
 /* eslint-disable jest/expect-expect */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable sonarjs/no-hardcoded-passwords */
 // for testing purpose
 
@@ -46,10 +45,10 @@ describe('AppController (e2e)', () => {
   };
 
   it('should create a user successfully and return status 201', async () => {
-    const response = await request(app.getHttpServer())
+    const response = (await request(app.getHttpServer())
       .post('/users')
       .send(user)
-      .expect(201);
+      .expect(201)) as { body: UserDTO };
 
     expect(response.body.name).toBe(user.name);
     expect(response.body.email).toBe(user.email);
@@ -117,10 +116,10 @@ describe('AppController (e2e)', () => {
       .spyOn(prisma.user, 'create')
       .mockRejectedValueOnce(new Error('Database error'));
 
-    const response = await request(app.getHttpServer())
+    const response = (await request(app.getHttpServer())
       .post('/users')
       .send(user)
-      .expect(500);
+      .expect(500)) as { body: { message: string } };
 
     expect(response.body.message).toBe('Internal server error');
   });
@@ -140,10 +139,10 @@ describe('AppController (e2e)', () => {
       deletedAt: null,
     };
 
-    const response = await request(app.getHttpServer())
+    const response = (await request(app.getHttpServer())
       .post('/users')
       .send(maliciousData)
-      .expect(201);
+      .expect(201)) as { body: UserDTO };
 
     expect(response.body.name).toBe('John Doe This is a test');
   });
@@ -155,10 +154,10 @@ describe('AppController (e2e)', () => {
 
   it('should password be hashed', async () => {
     const clonedUser = structuredClone(user);
-    const response = await request(app.getHttpServer())
+    const response = (await request(app.getHttpServer())
       .post('/users')
       .send(clonedUser)
-      .expect(201);
+      .expect(201)) as { body: UserDTO };
 
     expect(response.body.passwordHash).not.toBe(clonedUser.passwordHash);
 
@@ -194,6 +193,41 @@ describe('AppController (e2e)', () => {
     const users = await prisma.user.findMany();
 
     expect(users.length).toBe(2);
+  });
+
+  it('should delete user', async () => {
+    const response = (await request(app.getHttpServer())
+      .post('/users')
+      .send(user)
+      .expect(201)) as { body: UserDTO & { id: string } };
+    const users = await prisma.user.findMany();
+
+    expect(users.length).toBe(1);
+    const userId = response.body.id;
+
+    await request(app.getHttpServer())
+      .delete('/users')
+      .send({ id: userId } satisfies { id: string })
+      .expect(200);
+  });
+
+  it('should not delete user with invalid id', async () => {
+    (await request(app.getHttpServer())
+      .post('/users')
+      .send(user)
+      .expect(201)) as { body: UserDTO & { id: string } };
+    let users = await prisma.user.findMany();
+
+    expect(users.length).toBe(1);
+    const randomId = '12345';
+
+    await request(app.getHttpServer())
+      .delete('/users')
+      .send({ id: randomId } satisfies { id: string })
+      .expect(404);
+    users = await prisma.user.findMany();
+
+    expect(users.length).toBe(1);
   });
 
   beforeEach(async () => {

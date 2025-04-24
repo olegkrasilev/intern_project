@@ -28,4 +28,8 @@ export class UserService {
   async getAllUsers(): Promise<User[]> {
     return this.userRepository.getAllUsers();
   }
+
+  async deleteUserById(id: Pick<User, 'id'>): Promise<User> {
+    return this.userRepository.deleteUserById(id);
+  }
 }

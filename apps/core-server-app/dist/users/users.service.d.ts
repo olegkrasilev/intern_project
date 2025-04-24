@@ -7,5 +7,7 @@ export declare class UserService {
     private readonly createNewUserStrategy;
     private readonly existingUserStrategy;
     constructor(userRepository: UserRepository, createNewUserStrategy: CreateNewUserStrategy, existingUserStrategy: ExistingUserStrategy);
-    create(userDto: UserDTO): Promise<User | void>;
+    createUser(userDTO: UserDTO): Promise<User | void>;
+    getAllUsers(): Promise<User[]>;
+    deleteUserById(id: Pick<User, 'id'>): Promise<User>;
 }

@@ -19,4 +19,6 @@ export declare class UserRepository {
         deletedAt: Date | null;
     } | null>;
     createUser(data: UserDTO): Promise<User>;
+    getAllUsers(): Promise<User[]>;
+    deleteUserById({ id }: Pick<User, 'id'>): Promise<User>;
 }

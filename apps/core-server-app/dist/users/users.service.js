@@ -22,12 +22,18 @@ let UserService = class UserService {
         this.createNewUserStrategy = createNewUserStrategy;
         this.existingUserStrategy = existingUserStrategy;
     }
-    async create(userDto) {
-        const existingUser = await this.userRepository.findUserByEmail(userDto);
+    async createUser(userDTO) {
+        const existingUser = await this.userRepository.findUserByEmail(userDTO);
         if (existingUser) {
             return this.existingUserStrategy.handleExistingUser();
         }
-        return this.createNewUserStrategy.createUser(userDto);
+        return this.createNewUserStrategy.createUser(userDTO);
+    }
+    async getAllUsers() {
+        return this.userRepository.getAllUsers();
+    }
+    async deleteUserById(id) {
+        return this.userRepository.deleteUserById(id);
     }
 };
 exports.UserService = UserService;

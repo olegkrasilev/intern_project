@@ -27,6 +27,19 @@ let UserRepository = class UserRepository {
     async createUser(data) {
         return this.prisma.user.create({ data });
     }
+    async getAllUsers() {
+        return this.prisma.user.findMany();
+    }
+    async deleteUserById({ id }) {
+        try {
+            return await this.prisma.user.delete({
+                where: { id },
+            });
+        }
+        catch {
+            throw new common_1.NotFoundException(`User with id ${id} not found`);
+        }
+    }
 };
 exports.UserRepository = UserRepository;
 exports.UserRepository = UserRepository = __decorate([
