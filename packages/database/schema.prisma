@@ -8,167 +8,164 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-
 model User {
-  id           String   @id @default(uuid())
-  name         String   @unique
-  email        String   @unique
-  nickname     String   @unique
-  phone        String   @unique
-  passwordHash String
-  bio          String?
-  isDisabled   Boolean  @default(false)
-  role         String     // restrict tables
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime? @updatedAt
-  deletedAt    DateTime?
-
-  posts        Post[] @relation("UserPosts")
-  comments     Comment[] @relation("UserComments")
-  likes         Like[] @relation("UserLikes")
-  followers    Subscriptions[] @relation("UserFollowers")
-  notifications Notification[] @relation("UserNotification")
-  chats         Chat[] @relation("UserChats")
-  subscriptions     Subscriptions[] @relation("UserSubscriptions")
-  messages      Message[] @relation("UserMessages")
+  id               String            @id @default(uuid()) @db.Uuid
+  name             String
+  email            String            @unique
+  nickname         String            @unique
+  phone            String            @unique
+  passwordHash     String
+  bio              String?
+  isDisabled       Boolean           @default(false)
+  role             String
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime?         @updatedAt
+  deletedAt        DateTime?
+  assets           Asset[]           @relation("UserAssets")
   chatParticipants ChatParticipant[] @relation("UserChatParticipants")
-  assets Asset[] @relation("UserAssets")
-  @@index([role,isDisabled])
+  chats            Chat[]            @relation("UserChats")
+  comments         Comment[]         @relation("UserComments")
+  subscriptions    Subscriptions[]   @relation("UserSubscriptions")
+  followers        Subscriptions[]   @relation("UserFollowers")
+  likes            Like[]            @relation("UserLikes")
+  messages         Message[]         @relation("UserMessages")
+  notifications    Notification[]    @relation("UserNotification")
+  posts            Post[]            @relation("UserPosts")
+
+  @@index([role, isDisabled])
   @@map("users")
 }
 
-
 model Post {
-  id        String   @id @default(uuid())
-  userId    String
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @db.Uuid
   caption   String?
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
   deletedAt DateTime?
+  assets    Asset[]   @relation("PostAssets")
+  comments  Comment[] @relation("PostComments")
+  likes     Like[]    @relation("PostLikes")
+  user      User      @relation("UserPosts", fields: [userId], references: [id])
 
-  user      User     @relation("UserPosts",fields: [userId], references: [id])
-  comments Comment[] @relation("PostComments")
-  likes Like[]       @relation("PostLikes")
-  assets Asset[]     @relation("PostAssets")
   @@index([userId])
   @@map("posts")
 }
 
 model Comment {
-  id          String   @id @default(uuid())
-  postId      String
-  userId      String
+  id          String    @id @default(uuid()) @db.Uuid
+  postId      String    @db.Uuid
+  userId      String    @db.Uuid
   commentText String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
+  post        Post      @relation("PostComments", fields: [postId], references: [id])
+  user        User      @relation("UserComments", fields: [userId], references: [id])
 
-  post        Post     @relation("PostComments",fields: [postId], references: [id])
-  user        User     @relation("UserComments",fields: [userId], references: [id])
-  @@index([postId,userId])
+  @@index([postId, userId])
   @@map("comments")
 }
 
 model Like {
-  id        String   @id @default(uuid())
-  postId    String
-  userId    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        String    @id @default(uuid()) @db.Uuid
+  postId    String    @db.Uuid
+  userId    String    @db.Uuid
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+  post      Post      @relation("PostLikes", fields: [postId], references: [id])
+  user      User      @relation("UserLikes", fields: [userId], references: [id])
 
-  post      Post     @relation("PostLikes",fields: [postId], references: [id])
-  user      User     @relation("UserLikes",fields: [userId], references: [id])
-  @@index([postId,userId])
+  @@index([postId, userId])
   @@map("likes")
 }
 
 model Subscriptions {
-  id          String   @id @default(uuid())
-  subscriptionId  String @map("followerId")
-  followedId  String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  deletedAt   DateTime?
+  id             String    @id @default(uuid()) @db.Uuid
+  subscriptionId String    @map("followerId") @db.Uuid
+  followedId     String    @db.Uuid
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+  followed       User      @relation("UserSubscriptions", fields: [followedId], references: [id])
+  follower       User      @relation("UserFollowers", fields: [subscriptionId], references: [id])
 
-  follower    User     @relation("UserFollowers", fields: [subscriptionId], references: [id])
-  followed    User     @relation("UserSubscriptions", fields: [followedId], references: [id])
-  @@index([subscriptionId,followedId])
+  @@index([subscriptionId, followedId])
   @@map("followers")
 }
 
 model Chat {
-  id        String   @id @default(uuid())
-  creatorId String
-  chatName  String
-  chatType  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  deletedAt DateTime?
-
-  creator   User     @relation("UserChats",fields: [creatorId], references: [id])
-  messages Message[] @relation("MessageChats")
+  id               String            @id @default(uuid()) @db.Uuid
+  creatorId        String            @db.Uuid
+  chatName         String
+  chatType         String
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  deletedAt        DateTime?
   chatParticipants ChatParticipant[] @relation("ChatParticipants")
+  creator          User              @relation("UserChats", fields: [creatorId], references: [id])
+  messages         Message[]         @relation("MessageChats")
+
   @@index([creatorId])
   @@map("chats")
 }
 
 model Message {
-  id        String   @id @default(uuid())
+  id        String    @id @default(uuid()) @db.Uuid
   chatId    String
-  senderId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  senderId  String    @db.Uuid
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+  sender    User      @relation("UserMessages", fields: [senderId], references: [id])
+  chats     Chat[]    @relation("MessageChats")
 
-  sender    User     @relation("UserMessages",fields: [senderId], references: [id])
-  chats Chat[] @relation("MessageChats")
   @@index([senderId])
   @@map("messages")
 }
 
 model ChatParticipant {
-  chatId   String
-  userId   String
-  role     String
+  chatId String @db.Uuid
+  userId String @db.Uuid
+  role   String
+  chat   Chat   @relation("ChatParticipants", fields: [chatId], references: [id])
+  user   User   @relation("UserChatParticipants", fields: [userId], references: [id])
 
-  chat     Chat     @relation("ChatParticipants", fields: [chatId], references: [id])
-  user     User     @relation("UserChatParticipants", fields: [userId], references: [id])
   @@id([chatId, userId])
   @@map("chat_participants")
 }
 
 model Notification {
-  id              String   @id @default(uuid())
-  userId          String
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @db.Uuid
   notificationType String
-  referenceId     String?
-  referenceTable  String
-  message         String?
-  read            Boolean  @default(false)
-  createdAt       DateTime @default(now())
+  referenceId      String?
+  referenceTable   String
+  message          String?
+  read             Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  user             User     @relation("UserNotification", fields: [userId], references: [id])
 
-  user            User     @relation("UserNotification",fields: [userId], references: [id])
   @@index([userId])
   @@map("notifications")
 }
 
 model Asset {
-  id          String   @id @default(uuid())
-  postId      String?  @db.Uuid
-  userId      String   @db.Uuid
-  mimeType    String
-  fileSize    Int
-  fileName    String
-  resolution  String?
-  url         String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  deletedAt   DateTime?
+  id         String    @id @default(uuid()) @db.Uuid
+  postId     String?   @db.Uuid
+  userId     String    @db.Uuid
+  mimeType   String
+  fileSize   Int
+  fileName   String
+  resolution String?
+  url        String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
+  post       Post?     @relation("PostAssets", fields: [postId], references: [id])
+  user       User      @relation("UserAssets", fields: [userId], references: [id])
 
-  post        Post?    @relation("PostAssets",fields: [postId], references: [id])
-  user        User     @relation("UserAssets",fields: [userId], references: [id])
-  @@index([postId,userId])
+  @@index([postId, userId])
   @@map("assets")
 }

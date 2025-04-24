@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prisma:migration": "dotenv -e ../../.env -- npx prisma migrate dev --name init",
+    "prisma:reset-migration": "dotenv -e ../../.env -- npx prisma migrate reset",
+    "prisma:migrate-deploy": "dotenv -e ../../.env -- npx prisma migrate deploy",
+    "prisma:db-pull": "dotenv -e ../../.env -- npx prisma db pull"
   },
   "keywords": [],
   "author": "",
