@@ -10,9 +10,11 @@ export class CreateNewUserStrategy {
 
   async createUser(userDTO: UserDTO): Promise<User> {
     const preparedUserDTO = await prepareUserDTO(userDTO);
+
     return this.userRepository.createUser(preparedUserDTO);
   }
 }
+
 @Injectable()
 export class ExistingUserStrategy {
   handleExistingUser() {

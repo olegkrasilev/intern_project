@@ -14,6 +14,7 @@ import { UserDTO } from './user.dto';
  */
 export async function prepareUserDTO(userDTO: UserDTO): Promise<UserDTO> {
   const userDTOClone = structuredClone(userDTO);
+
   userDTOClone.passwordHash = await hashPassword(userDTOClone.passwordHash);
 
   return userDTOClone;

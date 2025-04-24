@@ -13,6 +13,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     } catch (error: unknown) {
       if (error instanceof Error) {
         this.logger.error('Failed to connect to the database', error.message);
+
         throw new Error(`Failed connection to database: ${error.message}`);
       }
     }

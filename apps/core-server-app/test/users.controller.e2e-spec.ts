@@ -1,3 +1,4 @@
+/* eslint-disable jest/expect-expect */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable sonarjs/no-hardcoded-passwords */
 // for testing purpose
@@ -63,6 +64,7 @@ describe('AppController (e2e)', () => {
     );
     expect(response.body.updatedAt).toBe(user.updatedAt);
     expect(response.body.deletedAt).toBe(user.deletedAt);
+
     return response;
   });
 
@@ -164,6 +166,7 @@ describe('AppController (e2e)', () => {
       clonedUser.passwordHash,
       response.body.passwordHash,
     );
+
     expect(isMatch).toBe(true);
   });
 
@@ -181,6 +184,7 @@ describe('AppController (e2e)', () => {
       updatedAt: null,
       deletedAt: null,
     };
+
     await request(app.getHttpServer()).post('/users').send(user).expect(201);
     await request(app.getHttpServer())
       .post('/users')
@@ -188,6 +192,7 @@ describe('AppController (e2e)', () => {
       .expect(201);
 
     const users = await prisma.user.findMany();
+
     expect(users.length).toBe(2);
   });
 
