@@ -32,8 +32,8 @@ let UserService = class UserService {
     async getAllUsers() {
         return this.userRepository.getAllUsers();
     }
-    async deleteUserById(id) {
-        return this.userRepository.deleteUserById(id);
+    async deleteUserById({ id }) {
+        return this.userRepository.deleteUserById({ id });
     }
 };
 exports.UserService = UserService;

@@ -9,5 +9,5 @@ export declare class UserService {
     constructor(userRepository: UserRepository, createNewUserStrategy: CreateNewUserStrategy, existingUserStrategy: ExistingUserStrategy);
     createUser(userDTO: UserDTO): Promise<User | void>;
     getAllUsers(): Promise<User[]>;
-    deleteUserById(id: Pick<User, 'id'>): Promise<User>;
+    deleteUserById({ id }: Pick<User, 'id'>): Promise<User>;
 }

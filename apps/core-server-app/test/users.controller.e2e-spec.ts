@@ -205,10 +205,7 @@ describe('AppController (e2e)', () => {
     expect(users.length).toBe(1);
     const userId = response.body.id;
 
-    await request(app.getHttpServer())
-      .delete('/users')
-      .send({ id: userId } satisfies { id: string })
-      .expect(200);
+    await request(app.getHttpServer()).delete(`/users/${userId}`).expect(200);
   });
 
   it('should not delete user with invalid id', async () => {
@@ -221,10 +218,7 @@ describe('AppController (e2e)', () => {
     expect(users.length).toBe(1);
     const randomId = '12345';
 
-    await request(app.getHttpServer())
-      .delete('/users')
-      .send({ id: randomId } satisfies { id: string })
-      .expect(404);
+    await request(app.getHttpServer()).delete(`/users/${randomId}`).expect(404);
     users = await prisma.user.findMany();
 
     expect(users.length).toBe(1);

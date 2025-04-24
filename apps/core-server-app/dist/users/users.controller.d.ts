@@ -6,7 +6,7 @@ export declare class UsersController {
     constructor(userService: UserService);
     createUser(createUserDTO: UserDTO): Promise<User | void>;
     getAllUsers(): Promise<User[]>;
-    deleteUser(id: Pick<User, 'id'>): Promise<{
+    deleteUser({ id }: Pick<User, 'id'>): Promise<{
         name: string;
         id: string;
         email: string;
