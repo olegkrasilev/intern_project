@@ -12,13 +12,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ExistingUserStrategy = exports.CreateNewUserStrategy = void 0;
 const common_1 = require("@nestjs/common");
 const user_repository_1 = require("../repository/user.repository");
+const prepare_user_dto_1 = require("../dto/prepare.user.dto");
 let CreateNewUserStrategy = class CreateNewUserStrategy {
     userRepository;
     constructor(userRepository) {
         this.userRepository = userRepository;
     }
-    async createUser(userDto) {
-        return this.userRepository.createUser(userDto);
+    async createUser(userDTO) {
+        const preparedUserDTO = await (0, prepare_user_dto_1.prepareUserDTO)(userDTO);
+        return this.userRepository.createUser(preparedUserDTO);
     }
 };
 exports.CreateNewUserStrategy = CreateNewUserStrategy;

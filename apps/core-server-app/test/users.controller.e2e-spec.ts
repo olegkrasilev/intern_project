@@ -9,6 +9,7 @@ import { App } from 'supertest/types';
 import { AppModule } from '../src/app.module';
 import { UserDTO } from 'src/users/dto/user.dto';
 import { PrismaService } from '../src/database/prisma.service';
+import * as bcrypt from 'bcrypt';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication<App>;
@@ -53,7 +54,7 @@ describe('AppController (e2e)', () => {
     expect(response.body.email).toBe(user.email);
     expect(response.body.nickname).toBe(user.nickname);
     expect(response.body.phone).toBe(user.phone);
-    expect(response.body.passwordHash).toBe(user.passwordHash);
+    expect(response.body.passwordHash).not.toBe(user.passwordHash);
     expect(response.body.bio).toBe(user.bio);
     expect(response.body.isDisabled).toBe(user.isDisabled);
     expect(response.body.role).toBe(user.role);
@@ -147,8 +148,23 @@ describe('AppController (e2e)', () => {
 
   it('should not create the user twice with the same email', async () => {
     await request(app.getHttpServer()).post('/users').send(user).expect(201);
-
     await request(app.getHttpServer()).post('/users').send(user).expect(409);
+  });
+
+  it('should password be hashed', async () => {
+    const clonedUser = structuredClone(user);
+    const response = await request(app.getHttpServer())
+      .post('/users')
+      .send(clonedUser)
+      .expect(201);
+
+    expect(response.body.passwordHash).not.toBe(clonedUser.passwordHash);
+
+    const isMatch = await bcrypt.compare(
+      clonedUser.passwordHash,
+      response.body.passwordHash,
+    );
+    expect(isMatch).toBe(true);
   });
 
   beforeEach(async () => {

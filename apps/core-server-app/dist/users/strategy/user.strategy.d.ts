@@ -4,7 +4,7 @@ import { User } from '@packages/database';
 export declare class CreateNewUserStrategy {
     private readonly userRepository;
     constructor(userRepository: UserRepository);
-    createUser(userDto: UserDTO): Promise<User>;
+    createUser(userDTO: UserDTO): Promise<User>;
 }
 export declare class ExistingUserStrategy {
     handleExistingUser(): void;

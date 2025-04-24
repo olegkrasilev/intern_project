@@ -15,13 +15,13 @@ export class UserService {
     private readonly existingUserStrategy: ExistingUserStrategy,
   ) {}
 
-  async create(userDto: UserDTO): Promise<User | void> {
-    const existingUser = await this.userRepository.findUserByEmail(userDto);
+  async create(userDTO: UserDTO): Promise<User | void> {
+    const existingUser = await this.userRepository.findUserByEmail(userDTO);
 
     if (existingUser) {
       return this.existingUserStrategy.handleExistingUser();
     }
 
-    return this.createNewUserStrategy.createUser(userDto);
+    return this.createNewUserStrategy.createUser(userDTO);
   }
 }
