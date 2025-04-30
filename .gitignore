@@ -1,0 +1,6 @@
+.turbo
+node_modules
+postgresql
+.env
+packages/generated
+apps/core-server-app/dist
