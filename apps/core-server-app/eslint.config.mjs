@@ -47,6 +47,7 @@ export default tseslint.config(
       '@stylistic/quotes': 'off',
       '@stylistic/indent': 'off',
       '@stylistic/brace-style': 'off',
+      '@stylistic/operator-linebreak': 'off',
       '@stylistic/padding-line-between-statements': [
         'error',
 

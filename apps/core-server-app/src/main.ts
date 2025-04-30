@@ -1,10 +1,14 @@
-import { NestFactory } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import helmet from 'helmet';
+import { GlobalExceptionFilter } from './shared/filters/global-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const httpAdapterHost = app.get(HttpAdapterHost);
+
+  app.useGlobalFilters(new GlobalExceptionFilter(httpAdapterHost));
 
   app.enableVersioning({
     type: VersioningType.URI,
