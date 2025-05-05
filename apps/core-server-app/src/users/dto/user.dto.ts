@@ -11,11 +11,12 @@ import { UserRole } from '../../shared/constants/roles';
 import { Sanitize } from '../../shared/utils/class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class UserDTO implements Omit<User, 'id'> {
-  isDisabled: boolean;
-  createdAt: Date;
-  updatedAt: Date | null;
-  deletedAt: Date | null;
+type UserWithoutAutoFieldsDTO = Omit<
+  User,
+  'id' | 'createdAt' | 'updatedAt' | 'deletedAt' | 'isDisabled'
+>;
+
+export class UserDTO implements UserWithoutAutoFieldsDTO {
   @ApiProperty({
     example: 'username',
   })

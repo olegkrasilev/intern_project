@@ -37,11 +37,7 @@ describe('AppController (e2e)', () => {
     phone: '+33333333333',
     passwordHash: '12345',
     bio: null,
-    isDisabled: false,
     role: 'user',
-    createdAt: new Date(),
-    updatedAt: null,
-    deletedAt: null,
   };
 
   it('should create a user successfully and return status 201', async () => {
@@ -56,13 +52,7 @@ describe('AppController (e2e)', () => {
     expect(response.body.phone).toBe(user.phone);
     expect(response.body.passwordHash).not.toBe(user.passwordHash);
     expect(response.body.bio).toBe(user.bio);
-    expect(response.body.isDisabled).toBe(user.isDisabled);
     expect(response.body.role).toBe(user.role);
-    expect(new Date(response.body.createdAt).toISOString()).toBe(
-      user.createdAt.toISOString(),
-    );
-    expect(response.body.updatedAt).toBe(user.updatedAt);
-    expect(response.body.deletedAt).toBe(user.deletedAt);
 
     return response;
   });
@@ -132,12 +122,8 @@ describe('AppController (e2e)', () => {
       nickname: 'Malicious',
       phone: '+33333333333',
       bio: null,
-      isDisabled: false,
       role: 'user',
-      createdAt: new Date(),
-      updatedAt: null,
-      deletedAt: null,
-    };
+    } satisfies UserDTO;
 
     const response = (await request(app.getHttpServer())
       .post('/users')
@@ -177,12 +163,8 @@ describe('AppController (e2e)', () => {
       nickname: 'johnny',
       phone: '+2222222222',
       bio: null,
-      isDisabled: false,
       role: 'user',
-      createdAt: new Date(),
-      updatedAt: null,
-      deletedAt: null,
-    };
+    } satisfies UserDTO;
 
     await request(app.getHttpServer()).post('/users').send(user).expect(201);
     await request(app.getHttpServer())
@@ -274,12 +256,8 @@ describe('AppController (e2e)', () => {
       nickname: 'johnny',
       phone: '+2222222222',
       bio: null,
-      isDisabled: false,
       role: 'user',
-      createdAt: new Date(),
-      updatedAt: null,
-      deletedAt: null,
-    };
+    } satisfies UserDTO;
 
     const response = (await request(app.getHttpServer())
       .post('/users')
