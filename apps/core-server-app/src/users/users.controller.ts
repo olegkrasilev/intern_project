@@ -21,6 +21,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Create a new user' })
   @ApiBody({ type: UserDTO })
   @ApiResponse({ status: 201, description: 'User created successfully' })
+  @ApiResponse({ status: 409, description: 'Conflict: User already exists' })
   createUser(@Body() createUserDTO: UserDTO): Promise<User | void> {
     return this.userService.createUser(createUserDTO);
   }
