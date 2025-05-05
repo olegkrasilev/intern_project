@@ -22,9 +22,9 @@ export class UserRepository {
     return this.prisma.user.findMany();
   }
 
-  async deleteUserById({ id }: Pick<User, 'id'>): Promise<User> {
+  async deleteUserById({ id }: Pick<User, 'id'>): Promise<void> {
     try {
-      return await this.prisma.user.delete({
+      await this.prisma.user.delete({
         where: { id },
       });
     } catch {

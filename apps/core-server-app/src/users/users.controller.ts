@@ -27,6 +27,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Create a new user' })
   @ApiBody({ type: UserDTO })
   @ApiResponse({ status: 201, description: 'User created successfully' })
+  @ApiResponse({ status: 400, description: 'Bad Request: Invalid input' })
   @ApiResponse({ status: 409, description: 'Conflict: User already exists' })
   createUser(@Body() createUserDTO: UserDTO): Promise<User | void> {
     return this.userService.createUser(createUserDTO);
@@ -54,7 +55,7 @@ export class UsersController {
     description: 'The ID of the user to delete',
     type: String,
   })
-  deleteUser(@Param() params: Pick<User, 'id'>): Promise<User> {
+  deleteUser(@Param() params: Pick<User, 'id'>): Promise<void> {
     return this.userService.deleteUserById({ id: params.id });
   }
 
@@ -71,6 +72,7 @@ export class UsersController {
     description: 'User updated successfully',
   })
   @ApiResponse({ status: 404, description: 'User not found' })
+  @ApiResponse({ status: 400, description: 'Bad Request: Invalid input' })
   updateUser(
     @Param() params: Pick<User, 'id'>,
     @Body() data: UserDTO,
