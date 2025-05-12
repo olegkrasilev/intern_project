@@ -39,7 +39,7 @@ export async function login(
     }
   } catch (error) {
     if (Array.isArray(error) && error.at(0) instanceof ValidationError) {
-      response.status(401).json({ message: 'Iternal Server Error' });
+      response.status(401).json({ message: 'Unauthorized' });
 
       return;
     }
