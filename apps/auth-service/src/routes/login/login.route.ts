@@ -4,4 +4,4 @@ import { LOGIN_ROUTE } from '../../shared/constants';
 
 export const router = express.Router();
 
-router.route(LOGIN_ROUTE).post(login);
+router.route(`/${LOGIN_ROUTE}`).post(login);

@@ -1,1 +1,3 @@
-export const LOGIN_ROUTE = '/login';
+export const API_VERSION_1 = 'api/v1';
+
+export const LOGIN_ROUTE = 'auth/login';

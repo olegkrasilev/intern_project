@@ -6,6 +6,7 @@ import { describe, it, beforeEach, afterEach } from '@jest/globals';
 import bcrypt from 'bcrypt';
 import { User } from '../../../../../packages/generated/prisma';
 import prisma from '../../database';
+import { API_VERSION_1, LOGIN_ROUTE } from '../../shared/constants';
 
 const user: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> = {
   name: 'username',
@@ -18,10 +19,12 @@ const user: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> = {
   isDisabled: false,
 };
 
+const url = `/${API_VERSION_1}/${LOGIN_ROUTE}`;
+
 describe('POST /login', () => {
   it('should successfully login and return access and refresh tokens', async () => {
     const response = await request(app)
-      .post('/api/v1/login')
+      .post(url)
       .send({
         email: 'username@gmail.com',
         password: '12345',
@@ -36,7 +39,7 @@ describe('POST /login', () => {
 
   it('should return 401 when password is incorrect, even if user exists', async () => {
     await request(app)
-      .post('/api/v1/login')
+      .post(url)
       .send({
         email: 'username@gmail.com',
         password: '123456',
@@ -46,7 +49,7 @@ describe('POST /login', () => {
 
   it('should return 401 when user not found', async () => {
     await request(app)
-      .post('/api/v1/login')
+      .post(url)
       .send({
         email: 'username1@gmail.com',
         password: '12345',
@@ -56,7 +59,7 @@ describe('POST /login', () => {
 
   it('should return 401 with invalid email', async () => {
     await request(app)
-      .post('/api/v1/login')
+      .post(url)
       .send({
         email: 'username',
         password: '12345',
@@ -66,7 +69,7 @@ describe('POST /login', () => {
 
   it('should return 401 with invalid password', async () => {
     await request(app)
-      .post('/api/v1/login')
+      .post(url)
       .send({
         email: 'username@gmail.com',
         password: '',
@@ -76,7 +79,7 @@ describe('POST /login', () => {
 
   it('should return 401 with missing field password', async () => {
     await request(app)
-      .post('/api/v1/login')
+      .post(url)
       .send({
         email: 'username@gmail.com',
       })
@@ -85,7 +88,7 @@ describe('POST /login', () => {
 
   it('should return 401 with missing field email', async () => {
     await request(app)
-      .post('/api/v1/login')
+      .post(url)
       .send({
         password: '12345',
       })
