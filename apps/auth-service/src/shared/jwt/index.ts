@@ -6,9 +6,7 @@ function generateTokens(user: User): {
   refreshToken: string;
 } {
   const payload: JwtPayload = {
-    id: user.id,
     email: user.email,
-    name: user.name,
   };
 
   const accessToken = sign(payload, process.env.JWT_SECRET_KEY!, {

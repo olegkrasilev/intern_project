@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { validateOrReject, ValidationError } from 'class-validator';
 import { UserDTO } from '../dto/user.dto';
-import { loginService } from '../service/login/login.service';
+import { findUserByEmail } from '../service/login/login.service';
 import bcrypt from 'bcrypt';
 import { generateTokens } from '../shared/jwt';
 
@@ -16,7 +16,7 @@ export async function login(
 
     await validateOrReject(userDto);
 
-    const user = await loginService({ email });
+    const user = await findUserByEmail({ email });
 
     if (!user) {
       response.status(401).json({ message: 'Unauthorized' });
