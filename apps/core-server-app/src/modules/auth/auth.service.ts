@@ -3,6 +3,8 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { User } from '@packages/database';
 import { UserDTO } from 'src/users/dto/user.dto';
 
 export interface AuthResponse {
@@ -12,6 +14,8 @@ export interface AuthResponse {
 
 @Injectable()
 export class AuthService {
+  constructor(private configService: ConfigService) {}
+
   async login({
     email,
     password,
@@ -30,7 +34,7 @@ export class AuthService {
       });
 
       if (!response.ok) {
-        throw new HttpException('', 500);
+        throw new HttpException('', response.status);
       }
 
       const data: AuthResponse = await response
@@ -46,6 +50,33 @@ export class AuthService {
 
           throw new Error('Invalid response structure');
         });
+
+      return data;
+    } catch {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async verifyAccessToken(token: string) {
+    const url = this.configService.get<string>('BASE_AUTH_SERVICE_URL', '');
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    try {
+      const response = await fetch(`${url}/verify`, {
+        method: 'POST',
+        headers,
+      });
+
+      if (!response.ok) {
+        throw new HttpException('', response.status);
+      }
+
+      const data = (await response.json()) as Pick<
+        User,
+        'name' | 'email' | 'nickname' | 'phone' | 'role'
+      >;
 
       return data;
     } catch {

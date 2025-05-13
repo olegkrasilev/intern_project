@@ -9,8 +9,8 @@ export async function login(
   request: Request<object, object, UserDTO>,
   response: Response,
 ) {
-  console.dir('HIT EXPRESS LOGIN');
-  const { password, email } = request.body;
+  const password = request.body?.password || '';
+  const email = request.body?.email || '';
 
   try {
     const userDto = new UserDTO(password, email);
