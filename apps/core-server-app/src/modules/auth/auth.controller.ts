@@ -4,18 +4,32 @@ import {
   Headers,
   HttpCode,
   Post,
+  Res,
   UnauthorizedException,
 } from '@nestjs/common';
-import { AuthResponse, AuthService } from './auth.service';
+import { AuthService } from './auth.service';
 import { AuthUserDTO } from './dto/auth.user.dto';
+import { Response } from 'express';
+import { setAuthCookies } from '../../shared/utils/cookies';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
-  login(@Body() authUserDTO: AuthUserDTO): Promise<AuthResponse | void> {
-    return this.authService.login(authUserDTO);
+  async login(@Body() authUserDTO: AuthUserDTO, @Res() response: Response) {
+    const tokens = await this.authService.login(authUserDTO);
+    const ACCESS_TOKEN = 'accessToken';
+    const REFRESH_TOKEN = 'refreshToken';
+    if (tokens && ACCESS_TOKEN in tokens && REFRESH_TOKEN in tokens) {
+      const { accessToken, refreshToken } = tokens;
+
+      setAuthCookies(response, accessToken, refreshToken);
+
+      return response.status(200).json();
+    }
+
+    throw new UnauthorizedException('Invalid credentials');
   }
 
   @Post('verify')
