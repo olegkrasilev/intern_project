@@ -13,7 +13,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 type UserWithoutAutoFieldsDTO = Omit<
   User,
-  'id' | 'createdAt' | 'updatedAt' | 'deletedAt' | 'isDisabled'
+  'id' | 'createdAt' | 'updatedAt' | 'deletedAt' | 'isDisabled' | 'passwordHash'
 >;
 
 export class UserDTO implements UserWithoutAutoFieldsDTO {
@@ -52,14 +52,6 @@ export class UserDTO implements UserWithoutAutoFieldsDTO {
   phone: string;
 
   @ApiProperty({
-    example: '$2y$10$Xy/8uObm1tXpb1aEHevE..oyhB.XakGkfgdw1j43DF3I7aENRVglO',
-  })
-  @IsNotEmpty()
-  @IsString()
-  @Sanitize()
-  passwordHash: string;
-
-  @ApiProperty({
     example: 'someBio',
   })
   @IsOptional()
@@ -75,4 +67,12 @@ export class UserDTO implements UserWithoutAutoFieldsDTO {
   @IsEnum(UserRole)
   @Sanitize()
   role: string;
+
+  @ApiProperty({
+    example: '12345',
+  })
+  @IsNotEmpty()
+  @IsString()
+  @Sanitize()
+  password: string;
 }

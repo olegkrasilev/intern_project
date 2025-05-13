@@ -17,7 +17,9 @@ export class UserService {
     private readonly updateUserStrategy: UpdateUserStrategy,
   ) {}
 
-  async createUser(userDTO: UserDTO): Promise<User | void> {
+  async createUser(
+    userDTO: Omit<UserDTO, 'passwordHash'>,
+  ): Promise<User | void> {
     const existingUser = await this.userRepository.findUserByEmail(userDTO);
 
     if (existingUser) {
@@ -36,6 +38,9 @@ export class UserService {
   }
 
   async updateUserById({ id }: Pick<User, 'id'>, userDTO: UserDTO) {
+    console.log(`Attempting to update user with ID: ${id}`);
+    console.log('User data to update:', userDTO);
+
     return this.updateUserStrategy.handleUpdateUser({ id }, userDTO);
   }
 }
