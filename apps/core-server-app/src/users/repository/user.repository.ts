@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { Prisma, User } from '@packages/database';
@@ -33,25 +34,20 @@ export class UserRepository {
   }
 
   async updateUserById({ id }: Pick<User, 'id'>, data: UserDTO): Promise<User> {
-    console.log(`Checking if user with ID ${id} exists before updating...`);
-
     const existingUser = await this.prisma.user.findUnique({
       where: { id },
     });
 
     if (!existingUser) {
-      console.log(`User with ID ${id} not found`);
-
       throw new NotFoundException(`User with ID ${id} not found`);
     }
 
-    console.log(`Proceeding to update user with ID: ${id}`);
+    const { password, ...dataWithoutPassword } = data;
+
     const updatedUser = await this.prisma.user.update({
       where: { id },
-      data,
+      data: dataWithoutPassword,
     });
-
-    console.log('User updated successfully:', updatedUser);
 
     return updatedUser;
   }

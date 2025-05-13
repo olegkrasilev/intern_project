@@ -38,9 +38,6 @@ export class UserService {
   }
 
   async updateUserById({ id }: Pick<User, 'id'>, userDTO: UserDTO) {
-    console.log(`Attempting to update user with ID: ${id}`);
-    console.log('User data to update:', userDTO);
-
     return this.updateUserStrategy.handleUpdateUser({ id }, userDTO);
   }
 }
