@@ -1,4 +1,3 @@
-/* eslint-disable @stylistic/member-delimiter-style */
 import {
   HttpException,
   Injectable,
@@ -6,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { UserDTO } from 'src/users/dto/user.dto';
 
-interface AuthResponse {
+export interface AuthResponse {
   accessToken: string;
   refreshToken: string;
 }
@@ -19,9 +18,11 @@ export class AuthService {
   }: Pick<UserDTO, 'email' | 'password'>): Promise<AuthResponse | void> {
     try {
       const url = process.env.BASE_AUTH_SERVICE_URL ?? '';
-
       const response = await fetch(`${url}/login`, {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
           email,
           password,
