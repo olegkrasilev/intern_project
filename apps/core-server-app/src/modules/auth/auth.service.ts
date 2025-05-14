@@ -84,7 +84,41 @@ export class AuthService {
     }
   }
 
-  refreshToken(refreshToken: string) {
-    return refreshToken;
+  async refreshToken(refreshToken: string): Promise<AuthResponse | void> {
+    const url = this.configService.get<string>('BASE_AUTH_SERVICE_URL', '');
+
+    try {
+      const response = await fetch(`${url}/refresh-token`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          refreshToken,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new HttpException('', response.status);
+      }
+
+      const data: AuthResponse = await response
+        .json()
+        .then((json: AuthResponse) => {
+          if (
+            json &&
+            typeof json.accessToken === 'string' &&
+            typeof json.refreshToken === 'string'
+          ) {
+            return json;
+          }
+
+          throw new Error('Invalid response structure');
+        });
+
+      return data;
+    } catch {
+      throw new InternalServerErrorException();
+    }
   }
 }

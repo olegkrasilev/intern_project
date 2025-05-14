@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { validateOrReject, ValidationError } from 'class-validator';
-import { AuthTokensDTO } from '../dto/refresh-token.dto';
+import { RefreshTokenDTO } from '../dto/refresh-token.dto';
 import { generateTokens, verifyToken } from '../shared/jwt';
 import { findUserByEmail } from '../service/login/login.service';
 
@@ -9,24 +9,22 @@ export async function refreshToken(
     object,
     object,
     {
-      accessToken: string;
       refreshToken: string;
     }
   >,
   response: Response,
 ) {
   try {
-    const { accessToken, refreshToken } = request.body;
+    const { refreshToken } = request.body;
 
-    const authTokensDTO = new AuthTokensDTO(accessToken, refreshToken);
+    const authTokensDTO = new RefreshTokenDTO(refreshToken);
 
     await validateOrReject(authTokensDTO);
 
     const decodedRefreshToken = verifyToken(refreshToken);
-    const decodedAccessToken = verifyToken(accessToken);
 
-    if (!decodedRefreshToken || !decodedAccessToken) {
-      response.status(401).json({ message: 'Unauthorized' });
+    if (!decodedRefreshToken) {
+      response.status(401).json();
 
       return;
     }
@@ -44,9 +42,11 @@ export async function refreshToken(
     }
   } catch (error) {
     if (Array.isArray(error) && error.at(0) instanceof ValidationError) {
-      response.status(401).json({ message: 'Unauthorized' });
+      response.status(401).json();
+
+      return;
     }
 
-    response.status(500).json({ message: 'Iternal Server Error' });
+    response.status(500).json();
   }
 }

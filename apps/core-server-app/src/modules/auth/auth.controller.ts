@@ -48,7 +48,10 @@ export class AuthController {
   }
 
   @Post('refresh-token')
-  refreshToken(@Headers('authorization') authHeader: string) {
+  async refreshToken(
+    @Headers('authorization') authHeader: string,
+    @Res() response: Response,
+  ) {
     const BEARER = 'Bearer ';
     if (!authHeader || !authHeader.startsWith(BEARER)) {
       throw new UnauthorizedException(
@@ -56,8 +59,18 @@ export class AuthController {
       );
     }
 
-    const token = authHeader.split(' ')[1];
+    const currentRefreshToken = authHeader.split(' ')[1];
+    const tokens = await this.authService.refreshToken(currentRefreshToken);
+    const ACCESS_TOKEN = 'accessToken';
+    const REFRESH_TOKEN = 'refreshToken';
+    if (tokens && ACCESS_TOKEN in tokens && REFRESH_TOKEN in tokens) {
+      const { accessToken, refreshToken } = tokens;
 
-    return this.authService.refreshToken(token);
+      setAuthCookies(response, accessToken, refreshToken);
+
+      return response.status(200).json();
+    }
+
+    throw new UnauthorizedException('Invalid credentials');
   }
 }

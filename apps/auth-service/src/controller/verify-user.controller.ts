@@ -31,7 +31,18 @@ export async function verifyUser(request: Request, response: Response) {
     } else {
       response.status(401).end();
     }
-  } catch {
-    response.status(500).end();
+  } catch (error) {
+    if (error instanceof Error) {
+      if (
+        error.name === 'JsonWebTokenError' ||
+        error.name === 'TokenExpiredError'
+      ) {
+        response.status(401).json({ message: 'Invalid or expired token' });
+      } else {
+        response.status(500).json({ message: error.message });
+      }
+    } else {
+      response.status(500).end();
+    }
   }
 }

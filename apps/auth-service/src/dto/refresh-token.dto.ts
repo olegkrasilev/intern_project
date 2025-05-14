@@ -1,16 +1,11 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class AuthTokensDTO {
-  @IsNotEmpty()
-  @IsString()
-  accessToken: string;
-
+export class RefreshTokenDTO {
   @IsNotEmpty()
   @IsString()
   refreshToken: string;
 
-  constructor(accessToken: string, refreshToken: string) {
-    this.accessToken = accessToken;
+  constructor(refreshToken: string) {
     this.refreshToken = refreshToken;
   }
 }
