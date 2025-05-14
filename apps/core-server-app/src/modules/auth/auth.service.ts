@@ -83,4 +83,8 @@ export class AuthService {
       throw new InternalServerErrorException();
     }
   }
+
+  refreshToken(refreshToken: string) {
+    return refreshToken;
+  }
 }

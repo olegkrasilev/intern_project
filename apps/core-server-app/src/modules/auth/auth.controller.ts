@@ -35,7 +35,8 @@ export class AuthController {
   @Post('verify')
   @HttpCode(200)
   verify(@Headers('authorization') authHeader: string) {
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    const BEARER = 'Bearer ';
+    if (!authHeader || !authHeader.startsWith(BEARER)) {
       throw new UnauthorizedException(
         'Authorization header missing or invalid',
       );
@@ -44,5 +45,19 @@ export class AuthController {
     const token = authHeader.split(' ')[1];
 
     return this.authService.verifyAccessToken(token);
+  }
+
+  @Post('refresh-token')
+  refreshToken(@Headers('authorization') authHeader: string) {
+    const BEARER = 'Bearer ';
+    if (!authHeader || !authHeader.startsWith(BEARER)) {
+      throw new UnauthorizedException(
+        'Authorization header missing or invalid',
+      );
+    }
+
+    const token = authHeader.split(' ')[1];
+
+    return this.authService.refreshToken(token);
   }
 }
