@@ -57,7 +57,12 @@ export class AuthService {
     }
   }
 
-  async verifyAccessToken(token: string) {
+  async verifyAccessToken(
+    token: string,
+  ): Promise<Pick<
+    User,
+    'name' | 'email' | 'nickname' | 'phone' | 'role'
+  > | void> {
     const url = this.configService.get<string>('BASE_AUTH_SERVICE_URL', '');
 
     const headers = {

@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './users.service';
 import { User } from '@packages/database';
@@ -17,6 +18,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { AuthGuard } from '../guards/auth';
 
 @ApiTags('Users')
 @Controller('users')
@@ -33,6 +35,7 @@ export class UsersController {
     return this.userService.createUser(createUserDTO);
   }
 
+  @UseGuards(AuthGuard)
   @Get()
   @ApiOperation({ summary: 'Get all users' })
   @ApiResponse({

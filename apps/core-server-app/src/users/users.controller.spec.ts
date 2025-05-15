@@ -8,12 +8,16 @@ import {
   ExistingUserStrategy,
   UpdateUserStrategy,
 } from './strategy/user.strategy';
+import { AuthGuard } from '../guards/auth';
+import { AuthService } from '../modules/auth/auth.service';
+import { ConfigModule } from '@nestjs/config';
 
 describe('UsersController', () => {
   let controller: UsersController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [ConfigModule.forRoot()],
       controllers: [UsersController],
       providers: [
         UserService,
@@ -22,6 +26,8 @@ describe('UsersController', () => {
         ExistingUserStrategy,
         UpdateUserStrategy,
         PrismaService,
+        AuthService,
+        AuthGuard,
       ],
     }).compile();
 

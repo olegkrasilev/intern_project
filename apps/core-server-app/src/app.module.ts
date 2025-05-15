@@ -2,10 +2,9 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './users/users.module';
-import { AuthService } from './modules/auth/auth.service';
-import { AuthController } from './modules/auth/auth.controller';
 import { ConfigModule } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -14,8 +13,10 @@ import { HttpModule } from '@nestjs/axios';
       isGlobal: true,
     }),
     HttpModule,
+    AuthModule,
+    UserModule,
   ],
-  controllers: [AppController, AuthController],
-  providers: [AppService, AuthService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

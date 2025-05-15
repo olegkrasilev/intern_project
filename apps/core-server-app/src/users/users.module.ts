@@ -8,6 +8,7 @@ import {
   ExistingUserStrategy,
   UpdateUserStrategy,
 } from './strategy/user.strategy';
+import { AuthService } from '../modules/auth/auth.service';
 
 @Module({
   imports: [],
@@ -19,6 +20,7 @@ import {
     ExistingUserStrategy,
     UpdateUserStrategy,
     PrismaService,
+    AuthService,
   ],
 })
 export class UserModule {}
